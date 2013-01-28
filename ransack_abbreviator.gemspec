@@ -19,6 +19,8 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]
 
   s.add_dependency 'ransack', '~> 0.7'
+  s.add_development_dependency "pry"
+  # s.add_development_dependency "pry-stack_explorer"
   s.add_development_dependency 'rspec', '~> 2.8.0'
   s.add_development_dependency 'machinist', '~> 1.0.6'
   s.add_development_dependency 'faker', '~> 0.9.5'
