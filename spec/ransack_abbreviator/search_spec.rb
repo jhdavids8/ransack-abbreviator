@@ -1,7 +1,7 @@
 require "spec_helper"
 require "pry"
 
-module Ransack
+module RansackAbbreviator
   describe Search do
     describe '#build' do
       it 'creates Conditions for top-level attributes' do
@@ -20,5 +20,14 @@ module Ransack
         condition.value.should eq 'Ernie'
       end
     end
+  end
+  
+  describe 'getting abbreviated names' do
+    it "fails if table is unknown"
+    
+    it "fails if column is unknown"
+    
+    it "fails if table-column pair exists with the same abbreviation"
+      # Basically, if both Person.gender and Person.grade have identical abbreviations
   end
 end
