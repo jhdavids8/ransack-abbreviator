@@ -19,6 +19,6 @@ module RansackAbbreviator
       it "allows columns to have duplicate shortcuts"
     end  
   
-    it "does not allow keyword abbreviations to be the same as a column or table abbreiation"
+    it "does not allow keyword abbreviations of reserved keywords"
   end
 end

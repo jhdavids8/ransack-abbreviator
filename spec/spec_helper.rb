@@ -18,6 +18,8 @@ Sham.define do
 end
 
 RSpec.configure do |config|
+  config.include RansackAbbreviator::ViewHelpers
+  
   config.before(:suite) do
     puts '=' * 80
     puts "Running specs against ActiveRecord #{ActiveRecord::VERSION::STRING} and ARel #{Arel::VERSION}..."

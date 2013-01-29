@@ -13,4 +13,4 @@ RansackAbbreviator.configure do |config|
   config.table_abbreviations = ransack_abbreviations["tables"] if ransack_abbreviations["tables"]
 end
 
-require "ransack_abbreviator/context"
+require "ransack_abbreviator/view_helpers"
