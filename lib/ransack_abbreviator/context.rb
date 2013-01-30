@@ -12,12 +12,10 @@ module Ransack
     end
     
     def bind(object, str)
-      binding.pry
       ransack_bind(object, str)
     end
 
     def ransackable_attribute?(str, klass)
-      binding.pry
       is_ransackable_attribute?(str, klass) || str == "nm"
     end
   end
@@ -29,7 +27,6 @@ module Ransack
 
         def type_for(attr)
           ransack_type_for(attr)
-          binding.pry
         end
       end
     end
@@ -47,14 +44,12 @@ module Ransack
       end
       
       def name=(name)
-        binding.pry
         # Jamie: Here. name was "children_nm"
         name = "name" if name == "nm"
         self.ransack_name = name
       end
       
       def attr_name=(attr_name)
-        binding.pry
         attr_name = "name" if attr_name == "nm"
         self.ransack_attr_name = attr_name
       end
