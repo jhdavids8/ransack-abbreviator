@@ -1,5 +1,21 @@
 require "spec_helper"
+require 'pry'
 
+module Ransack # We're testing Ransack's Search wih abbreviations
+  describe Search do
+    describe '#build' do
+      it 'creates Conditions for top-level attributes' do
+        search = Search.new(Person)
+        search.build(get_abbreviated_form_for(search, :name_eq) => 'Ernie')
+        condition = search.base[:name_eq]
+        condition.should be_a Nodes::Condition
+        condition.predicate.name.should eq 'eq'
+        condition.attributes.first.name.should eq 'name'
+        condition.value.should eq 'Ernie'
+      end
+    end
+  end
+end
   # describe Search do
   #     describe '#build' do
   #       it 'creates Conditions for top-level attributes' do
@@ -26,4 +42,8 @@ describe 'getting abbreviated names' do
   
   it "fails if table-column pair exists with the same abbreviation"
     # Basically, if both Person.gender and Person.grade have identical abbreviations
+end
+
+describe 'something' do
+  it "obeys abbreviations added or changed on the fly"
 end

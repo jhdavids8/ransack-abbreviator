@@ -3,7 +3,8 @@ module RansackAbbreviator
     def get_abbreviated_form_for(ransack_search_object, ransack_name)
       str = ransack_name.is_a?(Symbol) ? ransack_name.to_s : ransack_name.dup
       name = Ransack::Predicate.detect_and_strip_from_string!(str)
-      parent, attr_name = ransack_search_object.context.test(str)
+      parent, attr_name = ransack_search_object.context.extract_parent_and_attribute(str)
+      # Jamie: Fix this. I should use the returned parent to get the abbreviation as it is stored on the model
       column_abbr = RansackAbbreviator.column_abbreviation_for(attr_name)
       table_abbr = RansackAbbreviator.table_abbreviation_for(parent)
       table_abbr ? "#{table_abbr}.#{column_abbr}_#{name}" : "#{column_abbr}_#{name}"

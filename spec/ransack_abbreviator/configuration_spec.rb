@@ -20,5 +20,9 @@ module RansackAbbreviator
     end  
   
     it "does not allow keyword abbreviations of reserved keywords"
+    
+    it "requires unique table abbreviations"
+    
+    it "requires unique column abbreviations"
   end
 end
