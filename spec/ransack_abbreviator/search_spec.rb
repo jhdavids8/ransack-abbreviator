@@ -2,9 +2,14 @@ require "spec_helper"
 require "pry"
 
 describe "view helpers" do
-  it "gets an abbreviated name" do
+  it "gets an abbreviated column name" do
     search = Ransack::Search.new(Person)
-    get_abbreviated_form_for(search, :name_eq).should == :nm_eq
+    get_abbreviated_form_for(search, :name_eq).should == "nm_eq"
+  end
+  
+  it "gets an abbreviated table & column name" do
+    search = Ransack::Search.new(Article)
+    get_abbreviated_form_for(search, :person_name_eq).should == "pr.nm_eq"
   end
 end
   # describe Search do

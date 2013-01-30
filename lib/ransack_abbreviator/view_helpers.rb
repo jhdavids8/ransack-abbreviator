@@ -4,7 +4,7 @@ module RansackAbbreviator
       str = ransack_name.is_a?(Symbol) ? ransack_name.to_s : ransack_name.dup
       name = Ransack::Predicate.detect_and_strip_from_string!(str)
       abbr = RansackAbbreviator.column_abbreviations[str]
-      abbr.blank? ? ransack_name : "#{abbr}_#{name}".to_sym
+      abbr.blank? ? ransack_name : "#{abbr}_#{name}"
       # if ransack_search_object.base.attribute_method?(ransack_name)
       #         # condition = Condition.extract(@context, "countries_name_eq", ["Italy"])
       #         # puts condition -> Condition <attributes: ["countries_name"], predicate: eq, values: ["Italy"]>

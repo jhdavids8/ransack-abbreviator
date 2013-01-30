@@ -1,5 +1,0 @@
-ransack_abbreviations:
-  columns:
-    name: "nm"
-  tables:
-    Person: "pr"
