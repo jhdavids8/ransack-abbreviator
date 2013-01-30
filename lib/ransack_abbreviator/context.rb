@@ -3,6 +3,14 @@ module Ransack
     alias_method :is_ransackable_attribute?, :ransackable_attribute?
     alias_method :ransack_bind, :bind
     
+    def test(str)
+      # Jamie: Here. I can SO use this to extract the table and column from the string
+      # column is attr_name
+      # table is parent.tables[0].name (not sure if there would ever be more than 1 table). It is the actual pluralize
+      # (and lower case) name for the table (e.g. "notes" when referencing a Note model)
+      parent, attr_name = get_parent_and_attribute_name(str)
+    end
+    
     def bind(object, str)
       binding.pry
       ransack_bind(object, str)
