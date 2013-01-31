@@ -2,8 +2,8 @@ require "pathname"
 
 module RansackAbbreviator
   module Configuration
-    mattr_accessor :column_abbreviations, :table_abbreviations
-    self.column_abbreviations = self.table_abbreviations = {}
+    mattr_accessor :column_abbreviations, :association_abbreviations
+    self.column_abbreviations = self.association_abbreviations = {}
     
     def configure
       yield self
@@ -21,10 +21,8 @@ module RansackAbbreviator
       self.column_abbreviations.has_key?(column) ? self.column_abbreviations[column] : column
     end
     
-    def table_abbreviation_for(table)
-      table.is_a?(String) ? 
-        (self.table_abbreviations.has_key?(table) ? self.table_abbreviations[table] : table) :
-        (defined?(table.tables) ? self.table_abbreviation_for(table.tables[0].name) : nil)
+    def association_abbreviation_for(association)
+      self.association_abbreviations.has_key?(association) ? self.association_abbreviations[association] : association
     end
     
     def config_dir

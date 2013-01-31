@@ -3,13 +3,33 @@
 module Ransack
   class Context
     alias_method :ransackable_attribute_wo_abbr?, :ransackable_attribute?
+    alias_method :ransackable_association_wo_abbr?, :ransackable_association?
     
-    def extract_parent_and_attribute(str)
-      parent, attr_name = get_parent_and_attribute_name(str)
+    def get_association_model_and_attribute(str, klass = @klass, assoc = nil)
+      attr_name = found_assoc = nil
+      
+      if ransackable_attribute?(str, klass)
+        attr_name = str
+      elsif (segments = str.split(/_/)).size > 1
+        remainder = []
+        while !found_assoc && remainder.unshift(segments.pop) && segments.size > 0 do
+          assoc, poly_class = unpolymorphize_association(segments.join('_'))
+          if found_assoc = get_association(assoc, klass)
+            attr_name = remainder.join('_')
+            klass, assoc, attr_name = get_association_model_and_attribute(attr_name, poly_class || found_assoc.klass, found_assoc)
+          end
+        end
+      end
+
+      [klass, assoc, attr_name]
     end
 
     def ransackable_attribute?(str, klass)
-      ransackable_attribute_wo_abbr?(str, klass) || klass.ransackable_abbreviations.values.include?(str)
+      ransackable_attribute_wo_abbr?(str, klass) || klass.ransackable_column_abbreviations.values.include?(str)
+    end
+    
+    def ransackable_association?(str, klass)
+      ransackable_association_wo_abbr?(str, klass) || klass.ransackable_assoc_abbreviations.values.include?(str)
     end
   end
   

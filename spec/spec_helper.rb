@@ -3,6 +3,7 @@ require 'sham'
 require 'faker'
 require 'ransack'
 require 'ransack_abbreviator'
+require 'pry'
 
 Dir[File.expand_path('../{helpers,support,blueprints}/*.rb', __FILE__)].each do |f|
   require f

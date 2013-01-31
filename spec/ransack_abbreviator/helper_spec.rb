@@ -17,9 +17,9 @@ module RansackAbbreviator
         end
       end
       
-      context "a lookup of a defined table" do
+      context "a lookup of a defined association" do
         context "a lookup of a defined column" do
-          it "returns an abbreviated table & column pair" do
+          it "returns an abbreviated assoc & column pair" do
             search = Ransack::Search.new(Article)
             get_abbreviated_form_for(search, :person_name_eq).should == "pr.nm_eq"
           end
@@ -33,19 +33,26 @@ module RansackAbbreviator
         end
       end
       
-      context "a lookup of an undefined table" do
+      context "a lookup of an undefined association" do
         context "a lookup of a defined column" do
-          it "returns the full table but abbreviated column" do
+          it "returns the full association but abbreviated column" do
             search = Ransack::Search.new(Person)
             get_abbreviated_form_for(search, :articles_title_cont).should == "articles.tl_cont"
           end
         end
         
         context "a lookup of an undefined column" do
-          it "returns a full table & column pair" do
+          it "returns a full association & column pair" do
             search = Ransack::Search.new(Person)
             get_abbreviated_form_for(search, :articles_body_cont).should == "articles.body_cont"
           end
+        end
+      end
+      
+      context "a lookup of a multi-condition string" do
+        it "returns abbreviated forms for all conditions" do
+          search = Ransack::Search.new(Person)
+          get_abbreviated_form_for(search, :children_name_or_children_salary_eq).should == "ch.nm_or_ch.salary_eq"
         end
       end
     end

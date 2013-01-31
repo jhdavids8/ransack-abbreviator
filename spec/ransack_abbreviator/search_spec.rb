@@ -1,5 +1,4 @@
 require "spec_helper"
-require 'pry'
 
 module Ransack # We're testing Ransack's Search wih abbreviations
   describe Search do
@@ -12,6 +11,34 @@ module Ransack # We're testing Ransack's Search wih abbreviations
         condition.predicate.name.should eq 'eq'
         condition.attributes.first.name.should eq 'name'
         condition.value.should eq 'Ernie'
+      end
+      
+      it 'creates Conditions for association attributes' do
+        search = Search.new(Person)
+        search.build(get_abbreviated_form_for(search, :children_name_eq) => 'Ernie')
+        condition = search.base[:children_name_eq]
+        condition.should be_a Nodes::Condition
+        condition.predicate.name.should eq 'eq'
+        condition.attributes.first.name.should eq 'children_name'
+        condition.value.should eq 'Ernie'
+      end
+    end
+    
+    describe '#result' do
+      it "evaluates a basic condition" do
+        search = Search.new(Person)
+        search.build(get_abbreviated_form_for(search, :name_eq) => 'Ernie')
+        search.result.should be_an ActiveRecord::Relation
+        where = search.result.where_values.first
+        where.to_sql.should match /"people"\."name" = 'Ernie'/
+      end
+      
+      it 'evaluates conditions contextually' do
+        search = Search.new(Person)
+        search.build(get_abbreviated_form_for(search, :children_name_eq) => 'Ernie')
+        search.result.should be_an ActiveRecord::Relation
+        where = search.result.where_values.first
+        where.to_sql.should match /"children_people"\."name" = 'Ernie'/
       end
     end
   end
