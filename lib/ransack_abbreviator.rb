@@ -15,6 +15,7 @@ RansackAbbreviator.configure do |config|
   config.assoc_abbreviations = ransack_abbreviations["associations"] if ransack_abbreviations["associations"]
 end
 
-require "ransack_abbreviator/context"
+require "ransack_abbreviator/ransack_extensions/context"
+require "ransack_abbreviator/ransack_extensions/search"
 require 'ransack_abbreviator/adapters/active_record'
 require "ransack_abbreviator/view_helpers"

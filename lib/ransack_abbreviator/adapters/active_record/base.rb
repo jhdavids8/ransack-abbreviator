@@ -19,15 +19,6 @@ module RansackAbbreviator
           self._ransack_column_abbreviations[column_name] = column_abbr
         end
         
-        def ransackable_column_abbreviations
-          self._ransack_column_abbreviations ||= RansackAbbreviator.column_abbreviations.select{ |key, val| column_names.include?(key) }
-        end
-        
-        def ransackable_column_name_for(str)
-          str = str.to_s
-          self.ransackable_column_abbreviations.has_key?(str) ? self.ransackable_column_abbreviations[str] : str
-        end
-        
         def ransack_abbreviate_assoc(assoc_name, assoc_abbr)
           ransack_abbreviate_assoc!(assoc_name, assoc_abbr) rescue {}
         end
@@ -38,13 +29,33 @@ module RansackAbbreviator
           self._ransack_assoc_abbreviations[assoc_name] = assoc_abbr
         end
         
+        def ransackable_column_abbreviations
+          self._ransack_column_abbreviations ||= RansackAbbreviator.column_abbreviations.select{ |key, val| column_names.include?(key) }
+        end
+        
         def ransackable_assoc_abbreviations
           associations = reflect_on_all_associations.map{|a| a.name.to_s}
           self._ransack_assoc_abbreviations ||= RansackAbbreviator.assoc_abbreviations.select{ |key, val| associations.include?(key) }
         end
         
-        def ransackable_assoc_name_for(str)
-          self.ransackable_assoc_abbreviations.has_key?(str) ? self.ransackable_assoc_abbreviations[str] : str
+        def ransackable_column_name_for(possible_abbr)
+          possible_abbr = possible_abbr.to_s
+          column_names.include?(possible_abbr) ? possible_abbr : self.ransackable_column_abbreviations.key(possible_abbr)
+        end
+        
+        def ransackable_column_abbr_for(column_name)
+          column_name = column_name.to_s
+          self.ransackable_column_abbreviations.has_key?(column_name) ? self.ransackable_column_abbreviations[column_name] : column_name
+        end
+        
+        def ransackable_assoc_name_for(possible_abbr)
+          possible_abbr = possible_abbr.to_s
+          reflect_on_all_associations.map{|a| a.name.to_s}.include?(possible_abbr) ? possible_abbr : self.ransackable_assoc_abbreviations.key(possible_abbr)
+        end
+        
+        def ransackable_assoc_abbr_for(assoc)
+          assoc = assoc.to_s
+          self.ransackable_assoc_abbreviations.has_key?(assoc) ? self.ransackable_assoc_abbreviations[assoc] : assoc
         end
       end
     end

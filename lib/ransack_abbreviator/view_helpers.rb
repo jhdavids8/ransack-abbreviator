@@ -9,7 +9,7 @@ module RansackAbbreviator
         parent, assoc, attr_name = ransack_search_object.context.get_association_model_and_attribute(s)
         if assoc
           # Lookup the association abbr on the subject of the search
-          abbr_str << ransack_search_object.klass.ransackable_assoc_name_for(assoc.name.to_s)
+          abbr_str << ransack_search_object.klass.ransackable_assoc_abbr_for(assoc.name.to_s)
           
           if (match = s.match(/_of_([^_]+?)_type.*$/))
             # Polymorphic belongs_to format detected
@@ -22,7 +22,7 @@ module RansackAbbreviator
         end
         # Lookup the column abbr on the parent of the column (could be the same as the subject of the search, 
         # could be an associated model)
-        abbr_str << ransack_search_object.context.klassify(parent).ransackable_column_name_for(attr_name)
+        abbr_str << ransack_search_object.context.klassify(parent).ransackable_column_abbr_for(attr_name)
         abbr_str << "_#{conjunctions.shift}_" if !conjunctions.blank?
       end
       
