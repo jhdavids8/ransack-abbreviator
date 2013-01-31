@@ -1,0 +1,2 @@
+ransack-abbreviator
+===================
