@@ -1,5 +1,6 @@
 module RansackAbbreviator
   module Constants
-    RESERVED_KEYWORDS = %w(or and)
+    # Jamie: Enforce these
+    RESERVED_KEYWORDS = %w(or and of type)
   end
 end

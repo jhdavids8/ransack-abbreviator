@@ -55,6 +55,13 @@ module RansackAbbreviator
           get_abbreviated_form_for(search, :children_name_or_children_salary_eq).should == "ch.nm_or_ch.salary_eq"
         end
       end
+      
+      context "a lookup of a defined polymorphic belongs_to association" do
+        it "returns the abbreviated name for the polymorphic association" do
+          search = Ransack::Search.new(Note)
+          get_abbreviated_form_for(search, :notable_of_Person_type_name_eq).should == "nbl_of_pr_type.nm_eq"
+        end
+      end
     end
   end
 end
