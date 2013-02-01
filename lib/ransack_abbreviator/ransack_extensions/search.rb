@@ -5,7 +5,7 @@ module Ransack
     def build(params)
       # Loop through each of the params and test if any contain abbreviations. If so, convert them to the normal Ransack language
       new_params = {}
-      collapse_multiparameter_attributes!(params).each do |key, value|
+      collapse_multiparameter_attributes!(params.with_indifferent_access).each do |key, value|
         pred = Predicate.detect_from_string(key)
         str = base.strip_predicate_and_index_from_param_string(key)
         if base.special_condition?(str)
@@ -24,7 +24,7 @@ module Ransack
           new_params[full_str] = value
         end
       end
-      
+  
       ransack_search_build(new_params)
     end
   end

@@ -33,6 +33,41 @@ module Ransack # We're testing Ransack's Search wih abbreviations
           condition.attributes.first.name.should eq 'notable_of_Person_type_name'
           condition.value.should eq 'Ernie'
         end
+        
+        it 'creates Conditions for multiple polymorphic belongs_to association attributes' do
+          search = Search.new(Note)
+          search.build(ransack_abbreviation_for(search, :notable_of_Person_type_name_or_notable_of_Article_type_title_eq) => 'Ernie')
+          condition = search.base[:notable_of_Person_type_name_or_notable_of_Article_type_title_eq]
+          condition.should be_a Nodes::Condition
+          condition.predicate.name.should eq 'eq'
+          condition.attributes.first.name.should eq 'notable_of_Person_type_name'
+          condition.attributes.last.name.should eq 'notable_of_Article_type_title'
+          condition.value.should eq 'Ernie'
+        end
+
+        it 'discards empty conditions' do
+          search = Search.new(Person)
+          search.build(ransack_abbreviation_for(search, :children_name_eq) => '')
+          condition = search.base[:children_name_eq]
+          condition.should be_nil
+        end
+
+        it 'accepts arrays of groupings' do
+          search = Search.new(Person)
+          search.build(
+            :g => [
+              ransack_abbreviations_for(search, :m => 'or', :name_eq => 'Ernie', :children_name_eq => 'Ernie'),
+              ransack_abbreviations_for(search, :m => 'or', :name_eq => 'Bert', :children_name_eq => 'Bert')
+            ]
+          )
+          ors = search.groupings
+          ors.should have(2).items
+          or1, or2 = ors
+          or1.should be_a Nodes::Grouping
+          or1.combinator.should eq 'or'
+          or2.should be_a Nodes::Grouping
+          or2.combinator.should eq 'or'
+        end
       end
     end
     
