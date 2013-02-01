@@ -1,5 +1,9 @@
+require 'ransack_abbreviator/abbreviator'
+
 module Ransack
   class Context
+    include RansackAbbreviator::Abbreviator
+    
     def get_association_model_and_attribute(str, klass = @klass, assoc = nil)
       attr_name = found_assoc = nil
       
