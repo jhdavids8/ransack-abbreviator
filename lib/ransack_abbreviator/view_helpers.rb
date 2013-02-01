@@ -15,8 +15,8 @@ module RansackAbbreviator
           if (match = s.match(/_of_([^_]+?)_type.*$/))
             # Polymorphic belongs_to format detected
             # Lookup the association abbreviation out of all association abbreviations, as the value 
-            # can be the name of any model (e.g. Person...which is why we downcase)
-            abbr_str << "_of_" << RansackAbbreviator.assoc_abbreviation_for(match.captures.first.downcase) << "_type"
+            # can be the name of any model (e.g. PersonItem...which is why we underscore)
+            abbr_str << "_of_" << RansackAbbreviator.assoc_abbreviation_for(match.captures.first.underscore) << "_type"
           end
           
           abbr_str << "." 

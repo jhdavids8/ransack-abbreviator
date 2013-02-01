@@ -17,10 +17,8 @@ module RansackAbbreviator
       decoded_str = nil
       if (polymorphic_association_specified?(possible_assoc_abbr))
         assoc_name, class_type = get_polymorphic_assoc_and_class_type(possible_assoc_abbr)
-        decoded_str = "#{assoc_name}_of_#{class_type}_type"
-        # Jamie: Here. I'm ignoring the actual column (the string needs to be "notable_of_Person_type_name" and right
-        # now it's just "notable_of_Person_type"). I think I may have to look through all abbreviations, as I don't
-        # think I know the model here to lookup column abbr on
+        attr_name = decode_column_abbr(possible_attr_abbr, Kernel.const_get(class_type))
+        decoded_str = "#{assoc_name}_of_#{class_type}_type_#{attr_name}"
       elsif possible_assoc_abbr && assoc_name = self.klass.ransackable_assoc_name_for(possible_assoc_abbr)
         # Get the model for this association and lookup the full column name on it
         assoc = self.klass.reflect_on_all_associations.find{|a| a.name.to_s == assoc_name}
@@ -41,7 +39,7 @@ module RansackAbbreviator
       assoc_name = class_type = nil
       if (match = possible_assoc_abbr.match(/_of_([^_]+?)_type$/))
         assoc_name = self.klass.ransackable_assoc_name_for(match.pre_match)
-        class_type = RansackAbbreviator.assoc_name_for(match.captures.first.downcase).capitalize
+        class_type = RansackAbbreviator.assoc_name_for(match.captures.first).camelize
       end
       [assoc_name, class_type]
     end
