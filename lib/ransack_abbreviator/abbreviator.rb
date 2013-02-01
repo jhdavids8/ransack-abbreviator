@@ -1,5 +1,10 @@
 module RansackAbbreviator
   module Abbreviator
+    def decode_possible_abbr(possible_abbr)
+      possible_assoc, possible_attr_abbr = get_possible_assoc_and_attribute_abbr(possible_abbr)
+      decode_possible_abbreviations(possible_attr_abbr, possible_assoc)
+    end
+    
     def get_possible_assoc_and_attribute_abbr(s)
       possible_assoc = possible_attr_name = nil
       if s.include?(".")
