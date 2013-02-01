@@ -6,7 +6,7 @@ module Ransack # We're testing Ransack's Search wih abbreviations
       context "with abbreviations" do
         it 'creates Conditions for top-level attributes' do
           search = Search.new(Person)
-          search.build(get_abbreviated_form_for(search, :name_eq) => 'Ernie')
+          search.build(ransack_abbreviation_for(search, :name_eq) => 'Ernie')
           condition = search.base[:name_eq]
           condition.should be_a Nodes::Condition
           condition.predicate.name.should eq 'eq'
@@ -16,11 +16,21 @@ module Ransack # We're testing Ransack's Search wih abbreviations
       
         it 'creates Conditions for association attributes' do
           search = Search.new(Person)
-          search.build(get_abbreviated_form_for(search, :children_name_eq) => 'Ernie')
+          search.build(ransack_abbreviation_for(search, :children_name_eq) => 'Ernie')
           condition = search.base[:children_name_eq]
           condition.should be_a Nodes::Condition
           condition.predicate.name.should eq 'eq'
           condition.attributes.first.name.should eq 'children_name'
+          condition.value.should eq 'Ernie'
+        end
+        
+        it 'creates Conditions for polymorphic belongs_to association attributes' do
+          search = Search.new(Note)
+          search.build(ransack_abbreviation_for(search, :notable_of_Person_type_name_eq) => 'Ernie')
+          condition = search.base[:notable_of_Person_type_name_eq]
+          condition.should be_a Nodes::Condition
+          condition.predicate.name.should eq 'eq'
+          condition.attributes.first.name.should eq 'notable_of_Person_type_name'
           condition.value.should eq 'Ernie'
         end
       end
@@ -137,7 +147,7 @@ module Ransack # We're testing Ransack's Search wih abbreviations
     describe '#result' do
       it "evaluates a basic condition" do
         search = Search.new(Person)
-        search.build(get_abbreviated_form_for(search, :name_eq) => 'Ernie')
+        search.build(ransack_abbreviation_for(search, :name_eq) => 'Ernie')
         search.result.should be_an ActiveRecord::Relation
         where = search.result.where_values.first
         where.to_sql.should match /"people"\."name" = 'Ernie'/
@@ -145,7 +155,7 @@ module Ransack # We're testing Ransack's Search wih abbreviations
       
       it 'evaluates conditions contextually' do
         search = Search.new(Person)
-        search.build(get_abbreviated_form_for(search, :children_name_eq) => 'Ernie')
+        search.build(ransack_abbreviation_for(search, :children_name_eq) => 'Ernie')
         search.result.should be_an ActiveRecord::Relation
         where = search.result.where_values.first
         where.to_sql.should match /"children_people"\."name" = 'Ernie'/

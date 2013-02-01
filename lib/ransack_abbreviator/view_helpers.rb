@@ -1,6 +1,7 @@
 module RansackAbbreviator
   module ViewHelpers
-    def get_abbreviated_form_for(ransack_search_object, ransack_name)
+    def ransack_abbreviation_for(ransack_search_object, ransack_name)
+      # Jamie: Cleanup this code...these nested ifs and whatnot
       str = ransack_name.is_a?(Symbol) ? ransack_name.to_s : ransack_name.dup
       pred = Ransack::Predicate.detect_and_strip_from_string!(str)
       conjunctions = str.split("_").select{|s| s == "and" || s == "or" }
