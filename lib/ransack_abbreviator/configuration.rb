@@ -21,8 +21,16 @@ module RansackAbbreviator
       self.column_abbreviations.has_key?(column) ? self.column_abbreviations[column] : column
     end
     
+    def column_name_for(column_abbr)
+      self.column_abbreviations.has_value?(column_abbr) ? self.column_abbreviations.key(column_abbr) : column_abbr
+    end
+    
     def assoc_abbreviation_for(assoc)
       self.assoc_abbreviations.has_key?(assoc) ? self.assoc_abbreviations[assoc] : assoc
+    end
+    
+    def assoc_name_for(assoc_abbr)
+      self.assoc_abbreviations.has_value?(assoc_abbr) ? self.assoc_abbreviations.key(assoc_abbr) : assoc_abbr
     end
     
     def config_dir

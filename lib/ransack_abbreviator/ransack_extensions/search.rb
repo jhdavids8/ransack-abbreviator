@@ -15,8 +15,8 @@ module Ransack
           conjunctions = str.split("_").select{|s| s == "and" || s == "or" }
           full_str = ""
           str.split(/_and_|_or_/).each do |s|
-            possible_assoc, possible_attr_name = self.context.get_possible_assoc_and_attribute_abbr(s)
-            decoded_str = self.context.decode_possible_abbreviations(possible_attr_name, possible_assoc)
+            possible_assoc, possible_attr_abbr = self.context.get_possible_assoc_and_attribute_abbr(s)
+            decoded_str = self.context.decode_possible_abbreviations(possible_attr_abbr, possible_assoc)
             full_str << (!decoded_str.blank? ? decoded_str : s)
             full_str << "_#{conjunctions.shift}_" if !conjunctions.blank?
           end

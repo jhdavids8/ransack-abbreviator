@@ -13,18 +13,37 @@ module RansackAbbreviator
       [possible_assoc, possible_attr_name]
     end
     
-    def decode_possible_abbreviations(possible_attr_name, possible_assoc=nil)
+    def decode_possible_abbreviations(possible_attr_abbr, possible_assoc_abbr=nil)
       decoded_str = nil
-      if possible_assoc && assoc_name = self.klass.ransackable_assoc_name_for(possible_assoc)
+      if (polymorphic_association_specified?(possible_assoc_abbr))
+        assoc_name, class_type = get_polymorphic_assoc_and_class_type(possible_assoc_abbr)
+        decoded_str = "#{assoc_name}_of_#{class_type}_type"
+        # Jamie: Here. I'm ignoring the actual column (the string needs to be "notable_of_Person_type_name" and right
+        # now it's just "notable_of_Person_type"). I think I may have to look through all abbreviations, as I don't
+        # think I know the model here to lookup column abbr on
+      elsif possible_assoc_abbr && assoc_name = self.klass.ransackable_assoc_name_for(possible_assoc_abbr)
         # Get the model for this association and lookup the full column name on it
         assoc = self.klass.reflect_on_all_associations.find{|a| a.name.to_s == assoc_name}
-        attr_name = assoc.klass.ransackable_column_name_for(possible_attr_name)
-        decoded_str = "#{assoc_name}_#{attr_name.blank? ? possible_attr_name : attr_name}"
-      elsif attr_name = self.klass.ransackable_column_name_for(possible_attr_name)
+        attr_name = decode_column_abbr(possible_attr_abbr, assoc.klass)
+        decoded_str = "#{assoc_name}_#{attr_name.blank? ? possible_attr_abbr : attr_name}"
+      elsif attr_name = decode_column_abbr(possible_attr_abbr)
         decoded_str = attr_name
       end
       
       decoded_str
+    end
+    
+    def decode_column_abbr(possible_attr_abbr, klass=@klass)
+      klass.ransackable_column_name_for(possible_attr_abbr)
+    end
+    
+    def get_polymorphic_assoc_and_class_type(possible_assoc_abbr)
+      assoc_name = class_type = nil
+      if (match = possible_assoc_abbr.match(/_of_([^_]+?)_type$/))
+        assoc_name = self.klass.ransackable_assoc_name_for(match.pre_match)
+        class_type = RansackAbbreviator.assoc_name_for(match.captures.first.downcase).capitalize
+      end
+      [assoc_name, class_type]
     end
   end
 end

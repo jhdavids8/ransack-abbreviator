@@ -22,5 +22,9 @@ module Ransack
 
       [klass, assoc, attr_name]
     end
+    
+    def polymorphic_association_specified?(str)
+      str && str.match(/_of_([^_]+?)_type$/)
+    end
   end
 end
