@@ -60,6 +60,7 @@ module Schema
           t.integer :article_id
           t.integer :person_id
           t.text    :body
+          t.integer :vote_count
         end
 
         create_table :tags, :force => true do |t|

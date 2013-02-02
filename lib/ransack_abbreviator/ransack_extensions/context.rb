@@ -1,10 +1,12 @@
-require 'ransack_abbreviator/abbreviator'
+require 'ransack_abbreviator/abbreviators/decoder'
+require 'ransack_abbreviator/abbreviators/encoder'
 
 module Ransack
   class Context
-    include RansackAbbreviator::Abbreviator
+    include RansackAbbreviator::Abbreviators::Decoder
+    include RansackAbbreviator::Abbreviators::Encoder
     
-    def get_association_model_and_attribute(str, klass = @klass, associations = [])
+    def get_associations_parent_and_attribute(str, klass = @klass, associations = [])
       attr_name = nil
       if ransackable_attribute?(str, klass)
         attr_name = str
@@ -15,13 +17,15 @@ module Ransack
           assoc, poly_class = unpolymorphize_association(segments.join('_'))
           if found_assoc = get_association(assoc, klass)
             attr_name = remainder.join('_')
-            klass, associations, attr_name = get_association_model_and_attribute(attr_name, poly_class || found_assoc.klass, associations << found_assoc)
+            associations, klass, attr_name = get_associations_parent_and_attribute(attr_name, poly_class || found_assoc.klass, associations << found_assoc)
           end
         end
       end
 
-      [klass, associations, attr_name]
+      [associations, klass, attr_name]
     end
+    
+    private
     
     def polymorphic_association_specified?(str)
       str && str.match(/_of_([^_]+?)_type$/)

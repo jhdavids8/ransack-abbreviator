@@ -24,6 +24,8 @@ module RansackAbbreviator
             search = Ransack::Search.new(Article)
             ransack_abbreviation_for(search, :person_name_eq).should == "pr.nm_eq"
             ransack_abbreviation_for(search, :person_middle_name_eq).should == "pr.mn_eq"
+            search = Ransack::Search.new(Person)
+            ransack_abbreviation_for(search, :authored_article_comments_vote_count_lteq).should == "a_ac.vc_lteq"
           end
         end
         
@@ -69,6 +71,18 @@ module RansackAbbreviator
         it "abbreviates each association and column" do
           search = Ransack::Search.new(Person)
           ransack_abbreviation_for(search, :articles_comments_body_cont).should == "articles_cm.body_cont"
+        end
+        
+        it "abbreviates nested conditions for polymorphic associations" do
+          search = Ransack::Search.new(Note)
+          ransack_abbreviation_for(search, :notable_of_Person_type_children_name_eq).should == "nbl_of_pr_type_ch.nm_eq"
+        end
+      end
+      
+      context "a lookup of something totally random" do
+        it "does absolutely nothing" do
+          search = Ransack::Search.new(Note)
+          ransack_abbreviation_for(search, :i_am_garbage).should == "i_am_garbage"
         end
       end
     end

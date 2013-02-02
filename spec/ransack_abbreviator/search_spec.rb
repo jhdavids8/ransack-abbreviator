@@ -361,6 +361,19 @@ module Ransack # We're testing Ransack's Search wih abbreviations
           search.result.all.uniq.should eq search.result(:distinct => true).all
         end
       end
+      
+      it "has the same results for a query with and without abbreviations" do
+        # Just some random sanity checks
+        search = Search.new(Person, :authored_article_comments_vote_count_lteq => 10)
+        abbr_search = Search.new(Person)
+        abbr_search.build(ransack_abbreviation_for(abbr_search, :authored_article_comments_vote_count_lteq) => 10)
+        search.result.where_values.first.to_sql.should eq abbr_search.result.where_values.first.to_sql
+        
+        search = Search.new(Note, :notable_of_Person_type_children_name_eq => "Ernie")
+        abbr_search = Search.new(Note)
+        abbr_search.build(ransack_abbreviation_for(abbr_search, :notable_of_Person_type_children_name_eq) => "Ernie")
+        search.result.where_values.first.to_sql.should eq abbr_search.result.where_values.first.to_sql
+      end
     end
   end
 end

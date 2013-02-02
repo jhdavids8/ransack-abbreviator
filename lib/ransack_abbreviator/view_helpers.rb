@@ -7,29 +7,14 @@ module RansackAbbreviator
       conjunctions = str.split("_").select{|s| s == "and" || s == "or" }
       abbr_str = ""
       str.split(/_and_|_or_/).each do |s|
-        parent, associations, attr_name = ransack_search_object.context.get_association_model_and_attribute(s)
+        associations, parent, attr_name = ransack_search_object.context.get_associations_parent_and_attribute(s)
         if attr_name
           unless associations.blank?
-            # Lookup the association abbr on the subject of the search
-            klass = ransack_search_object.klass
-            associations.each_with_index do |assoc, i|
-              abbr_str << "_" unless i == 0
-              abbr_str << klass.ransackable_assoc_abbr_for(assoc.name.to_s)
-              klass = assoc.klass unless assoc.options[:polymorphic]
-            end
-          
-            if (match = s.match(/_of_([^_]+?)_type.*$/))
-              # Polymorphic belongs_to format detected
-              # Lookup the association abbreviation out of all association abbreviations, as the value 
-              # can be the name of any model (e.g. PersonItem...which is why we underscore)
-              abbr_str << "_of_#{RansackAbbreviator.assoc_abbreviation_for(match.captures.first.underscore)}_type"
-            end
-          
-            abbr_str << "." 
+            encoded_associations, parent = ransack_search_object.context.encode_associations(associations, s)
+            abbr_str << "#{encoded_associations}."
           end
-          # Lookup the column abbr on the parent of the column (could be the same as the subject of the search, 
-          # could be an associated model)
-          abbr_str << ransack_search_object.context.klassify(parent).ransackable_column_abbr_for(attr_name)
+          # Lookup the column abbr on the parent of the column
+          abbr_str << parent.ransackable_column_abbr_for(attr_name)
         else
           abbr_str << s
         end
