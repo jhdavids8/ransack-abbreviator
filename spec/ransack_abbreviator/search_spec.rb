@@ -291,7 +291,6 @@ module Ransack # We're testing Ransack's Search wih abbreviations
 
         it 'returns distinct records when passed :distinct => true' do
           search = Search.new(Person)
-          # Jamie: Here. Nested conditions aren't currently supported
           search.build(
             :g => [ransack_abbreviations_for(search, :m => 'or', :comments_body_cont => 'e', :articles_comments_body_cont => 'e')]
           )
