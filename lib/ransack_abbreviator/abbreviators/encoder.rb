@@ -1,6 +1,23 @@
 module RansackAbbreviator
   module Abbreviators
     module Encoder
+      def encode_ransack_str(str)
+        encoded_str = ""
+        associations, parent, attr_name = self.get_associations_parent_and_attribute(str)
+        
+        if attr_name
+          unless associations.blank?
+            encoded_associations, parent = self.encode_associations(associations, str)
+            encoded_str = "#{encoded_associations}."
+          end
+          encoded_str << self.encode_attribute(attr_name, parent)
+        else
+          encoded_str = str
+        end
+        
+        encoded_str
+      end
+      
       def encode_associations(associations, ransack_name)
         klass = self.klass
         encoded_str = ""
@@ -21,6 +38,10 @@ module RansackAbbreviator
         end
         
         [encoded_str, klass]
+      end
+      
+      def encode_attribute(attr_name, parent=@klass)
+        parent.ransackable_column_abbr_for(attr_name)
       end
     end
   end
