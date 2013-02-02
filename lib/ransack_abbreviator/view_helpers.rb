@@ -7,11 +7,16 @@ module RansackAbbreviator
       conjunctions = str.split("_").select{|s| s == "and" || s == "or" }
       abbr_str = ""
       str.split(/_and_|_or_/).each do |s|
-        parent, assoc, attr_name = ransack_search_object.context.get_association_model_and_attribute(s)
+        parent, associations, attr_name = ransack_search_object.context.get_association_model_and_attribute(s)
         if attr_name
-          if assoc
+          unless associations.blank?
             # Lookup the association abbr on the subject of the search
-            abbr_str << ransack_search_object.klass.ransackable_assoc_abbr_for(assoc.name.to_s)
+            klass = ransack_search_object.klass
+            associations.each_with_index do |assoc, i|
+              abbr_str << "_" unless i == 0
+              abbr_str << klass.ransackable_assoc_abbr_for(assoc.name.to_s)
+              klass = assoc.klass unless assoc.options[:polymorphic]
+            end
           
             if (match = s.match(/_of_([^_]+?)_type.*$/))
               # Polymorphic belongs_to format detected
