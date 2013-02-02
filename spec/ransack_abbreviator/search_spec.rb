@@ -258,7 +258,6 @@ module Ransack # We're testing Ransack's Search wih abbreviations
 
         it 'evaluates nested conditions' do
           search = Search.new(Person)
-          binding.pry
           search.build(
             ransack_abbreviation_for(search, :children_name_eq) => 'Ernie',
             :g => [
@@ -273,7 +272,6 @@ module Ransack # We're testing Ransack's Search wih abbreviations
         end
 
         it 'evaluates arrays of groupings' do
-          binding.pry
           search = Search.new(Person)
           search.build(
             :g => [
@@ -293,7 +291,6 @@ module Ransack # We're testing Ransack's Search wih abbreviations
 
         it 'returns distinct records when passed :distinct => true' do
           search = Search.new(Person)
-          binding.pry
           # Jamie: Here. Nested conditions aren't currently supported
           search.build(
             :g => [ransack_abbreviations_for(search, :m => 'or', :comments_body_cont => 'e', :articles_comments_body_cont => 'e')]

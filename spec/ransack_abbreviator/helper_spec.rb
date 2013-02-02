@@ -7,6 +7,7 @@ module RansackAbbreviator
         it "returns an abbreviated column name" do
           search = Ransack::Search.new(Person)
           ransack_abbreviation_for(search, :name_eq).should == "nm_eq"
+          ransack_abbreviation_for(search, :middle_name_eq).should == "mn_eq"          
         end
       end
       
@@ -22,6 +23,7 @@ module RansackAbbreviator
           it "returns an abbreviated assoc & column pair" do
             search = Ransack::Search.new(Article)
             ransack_abbreviation_for(search, :person_name_eq).should == "pr.nm_eq"
+            ransack_abbreviation_for(search, :person_middle_name_eq).should == "pr.mn_eq"
           end
         end
         

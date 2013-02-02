@@ -11,6 +11,7 @@ end
 
 Sham.define do
   name     { Faker::Name.name }
+  middle_name     { Faker::Name.name }
   title    { Faker::Lorem.sentence }
   body     { Faker::Lorem.paragraph }
   salary   {|index| 30000 + (index * 1000)}

@@ -19,18 +19,35 @@ module RansackAbbreviator
     end
     
     def decode_possible_abbreviations(possible_attr_abbr, possible_assoc_abbr=nil)
-      decoded_str = nil
-      if (polymorphic_association_specified?(possible_assoc_abbr))
-        assoc_name, class_type = get_polymorphic_assoc_and_class_type(possible_assoc_abbr)
-        attr_name = decode_column_abbr(possible_attr_abbr, Kernel.const_get(class_type))
-        decoded_str = "#{assoc_name}_of_#{class_type}_type_#{attr_name}"
-      elsif possible_assoc_abbr && assoc_name = self.klass.ransackable_assoc_name_for(possible_assoc_abbr)
-        # Get the model for this association and lookup the full column name on it
-        assoc = self.klass.reflect_on_all_associations.find{|a| a.name.to_s == assoc_name}
-        attr_name = decode_column_abbr(possible_attr_abbr, assoc.klass)
-        decoded_str = "#{assoc_name}_#{attr_name.blank? ? possible_attr_abbr : attr_name}"
-      elsif attr_name = decode_column_abbr(possible_attr_abbr)
-        decoded_str = attr_name
+      decoded_str = ""
+      klass = self.klass
+      if possible_assoc_abbr
+        if (segments = possible_assoc_abbr.split(/_/)).size > 0
+          association_parts = []
+          while segments.size > 0 && association_parts << segments.shift
+            assoc_to_test = association_parts.join('_')
+            if polymorphic_association_specified?(assoc_to_test)
+              assoc_name, class_type = get_polymorphic_assoc_and_class_type(assoc_to_test)
+              klass = Kernel.const_get(class_type)
+              decoded_str << "of_#{class_type}_type_"
+              association_parts.clear
+            elsif assoc_name = klass.ransackable_assoc_name_for(assoc_to_test)
+              # Get the model for this association and lookup the full column name on it
+              assoc = klass.reflect_on_all_associations.find{|a| a.name.to_s == assoc_name}
+              klass = assoc.klass unless assoc.options[:polymorphic]
+              decoded_str << "#{assoc_name}_"
+              association_parts.clear unless segments[0] == "of"  # Cheat a bit. We want to clear unless this is a polymorphic query
+            end
+          end
+        end
+
+        decoded_str = "#{possible_assoc_abbr}_" if decoded_str.blank?
+      end
+
+      if attr_name = decode_column_abbr(possible_attr_abbr, klass)
+        decoded_str << attr_name
+      else
+        decoded_str << possible_attr_abbr
       end
       
       decoded_str
