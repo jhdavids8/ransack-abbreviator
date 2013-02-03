@@ -9,14 +9,6 @@ module RansackAbbreviator
       yield self
     end
     
-    def add_column_abbreviation(column, abbr)
-      self.column_abbreviations[column] = abbr
-    end
-    
-    def add_assoc_abbreviation(assoc, abbr)
-      self.assoc_abbreviations[assoc] = abbr
-    end
-    
     def column_abbreviation_for(column)
       self.column_abbreviations.has_key?(column) ? self.column_abbreviations[column] : column
     end

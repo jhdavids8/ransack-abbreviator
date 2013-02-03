@@ -14,9 +14,9 @@ module Ransack
         else
           conjunctions = str.split("_").select{|s| s == "and" || s == "or" }
           full_str = ""
-          str.split(/_and_|_or_/).each do |s|
-            decoded_str = self.context.decode_possible_abbr(s)
-            full_str << (!decoded_str.blank? ? decoded_str : s)
+          str.split(/_and_|_or_/).each do |possible_abbr|
+            decoded_str = self.context.decode_possible_abbr(possible_abbr)
+            full_str << (!decoded_str.blank? ? decoded_str : possible_abbr)
             full_str << "_#{conjunctions.shift}_" if !conjunctions.blank?
           end
           full_str << "_#{pred}" if pred

@@ -3,14 +3,15 @@ module RansackAbbreviator
     module Encoder
       def encode_ransack_str(str)
         encoded_str = ""
-        associations, parent, attr_name = self.get_associations_parent_and_attribute(str)
+        associations, attr_name = self.get_associations_and_attribute(str)
+        parent_of_attribute = self.klass
         
         if attr_name
           unless associations.blank?
-            encoded_associations, parent = self.encode_associations(associations, str)
+            encoded_associations, parent_of_attribute = self.encode_associations(associations, str)
             encoded_str = "#{encoded_associations}."
           end
-          encoded_str << self.encode_attribute(attr_name, parent)
+          encoded_str << self.encode_attribute(attr_name, parent_of_attribute)
         else
           encoded_str = str
         end

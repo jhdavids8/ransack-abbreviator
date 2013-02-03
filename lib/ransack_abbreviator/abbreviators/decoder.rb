@@ -3,13 +3,13 @@ module RansackAbbreviator
     module Decoder
       def decode_possible_abbr(possible_abbr)
         possible_assoc_abbr, possible_attr_abbr = extract_possible_assoc_and_attribute_abbr(possible_abbr)
-        klass = self.klass
+        parent_of_attribute = self.klass
         decoded_str = ""
         if possible_assoc_abbr 
-          decoded_str, klass = decode_assoc_abbr(possible_assoc_abbr)
+          decoded_str, parent_of_attribute = decode_assoc_abbr(possible_assoc_abbr)
         end
 
-        if attr_name = decode_column_abbr(possible_attr_abbr, klass)
+        if attr_name = decode_column_abbr(possible_attr_abbr, parent_of_attribute)
           decoded_str << attr_name
         else
           decoded_str << possible_attr_abbr
@@ -35,10 +35,12 @@ module RansackAbbreviator
             association_parts.clear
           elsif assoc_name = klass.ransackable_assoc_name_for(assoc_to_test)
             assoc = klass.reflect_on_all_associations.find{|a| a.name.to_s == assoc_name}
-            # Get the model for this association, as the next association/attribute will be related to it
-            klass = assoc.klass unless assoc.options[:polymorphic]
             decoded_str << "#{assoc_name}_"
-            association_parts.clear unless segments[0] == "of"  # Cheat a bit. We want to clear unless this is a polymorphic query
+            unless assoc.options[:polymorphic]
+              # Get the model for this association, as the next association/attribute will be related to it
+              klass = assoc.klass 
+              association_parts.clear
+            end
           end
         end
 

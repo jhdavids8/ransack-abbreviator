@@ -6,7 +6,7 @@ module Ransack
     include RansackAbbreviator::Abbreviators::Decoder
     include RansackAbbreviator::Abbreviators::Encoder
     
-    def get_associations_parent_and_attribute(str, klass = @klass, associations = [])
+    def get_associations_and_attribute(str, klass = @klass, associations = [])
       attr_name = nil
       if ransackable_attribute?(str, klass)
         attr_name = str
@@ -17,12 +17,12 @@ module Ransack
           assoc, poly_class = unpolymorphize_association(segments.join('_'))
           if found_assoc = get_association(assoc, klass)
             attr_name = remainder.join('_')
-            associations, klass, attr_name = get_associations_parent_and_attribute(attr_name, poly_class || found_assoc.klass, associations << found_assoc)
+            associations, attr_name = get_associations_and_attribute(attr_name, poly_class || found_assoc.klass, associations << found_assoc)
           end
         end
       end
 
-      [associations, klass, attr_name]
+      [associations, attr_name]
     end
     
     private

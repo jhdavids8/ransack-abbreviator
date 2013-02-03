@@ -377,16 +377,3 @@ module Ransack # We're testing Ransack's Search wih abbreviations
     end
   end
 end
-  
-describe 'getting abbreviated names' do
-  it "fails if table is unknown"
-  
-  it "fails if column is unknown"
-  
-  it "fails if table-column pair exists with the same abbreviation"
-    # Basically, if both Person.gender and Person.grade have identical abbreviations
-end
-
-describe 'something' do
-  it "obeys abbreviations added or changed on the fly"
-end
