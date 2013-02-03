@@ -382,13 +382,22 @@ module Ransack # We're testing Ransack's Search wih abbreviations
       end
       
       it 'support abbreviations' do
-        abbr_middle_name_search = ransack_abbreviation_for(@search, :middle_name_eq)
-        @search.send(abbr_middle_name_search, 'Ernie')
-        @search.send(abbr_middle_name_search).should eq 'Ernie'
+        abbr_search = ransack_abbreviation_for(@search, :middle_name_eq)
+        @search.send "#{abbr_search}=", 'Ernie'
+        @search.middle_name_eq.should eq 'Ernie'
+        
+        abbr_search = ransack_abbreviation_for(@search, :authored_article_comments_vote_count_lteq)
+        @search.send "#{abbr_search}=", 10
+        @search.authored_article_comments_vote_count_lteq.should eq 10
+        
+        note_search = Search.new(Note)
+        abbr_search = ransack_abbreviation_for(note_search, :notable_of_Person_type_name_eq)
+        note_search.send "#{abbr_search}=", 'Ernie'
+        note_search.notable_of_Person_type_name_eq.should eq 'Ernie'
       end
       
-      it 'raises NoMethodError when sent an invalid attribute/aabreviation' do
-        expect {@search.i_am_garvage}.to raise_error NoMethodError
+      it 'raises NoMethodError when sent an invalid attribute/abreviation' do
+        expect {@search.i_am_garbage}.to raise_error NoMethodError
       end
     end
   end

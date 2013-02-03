@@ -4,9 +4,11 @@ require 'ransack_abbreviator/abbreviators/encoder'
 module Ransack
   class Context
     attr_reader :decoder, :encoder
+    alias_method :full_ransackable_attribute?, :ransackable_attribute?
+    alias_method :full_ransackable_association?, :ransackable_association?
     
     delegate :encode_ransack_str, to: :encoder
-    delegate :decode_possible_abbr, to: :decoder
+    delegate :decode_parameter, :decode_possible_abbr, to: :decoder
     
     def get_associations_and_attribute(str, klass = @klass, associations = [])
       attr_name = nil
@@ -33,6 +35,22 @@ module Ransack
     
     def encoder
       @encoder ||= RansackAbbreviator::Abbreviators::Encoder.new(self)
+    end
+    
+    def ransackable_attribute?(str, klass)
+      full_ransackable_attribute?(str, klass) || ransackable_attribute_abbreviation?(str, klass)
+    end
+    
+    def ransackable_association?(str, klass)
+      full_ransackable_association?(str, klass) || ransackable_assoc_abbreviation?(str, klass)
+    end
+    
+    def ransackable_attribute_abbreviation?(str, klass)
+      klass.ransackable_column_abbreviations.has_value?(str)
+    end
+    
+    def ransackable_assoc_abbreviation?(str, klass)
+      klass.ransackable_assoc_abbreviations.has_value?(str)
     end
     
     def self.polymorphic_association_specified?(str)

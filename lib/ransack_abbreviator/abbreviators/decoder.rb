@@ -7,6 +7,27 @@ module RansackAbbreviator
         @context = context
       end
       
+      def decode_parameter(param)
+        str = param.dup
+        pred = Ransack::Predicate.detect_and_strip_from_string!(str)
+        decoded_param = nil
+        case str
+        when /^(g|c|m|groupings|conditions|combinator)=?$/
+          decoded_param = param
+        else
+          conjunctions = str.split("_").select{|s| s == "and" || s == "or" }
+          decoded_param = ""
+          str.split(/_and_|_or_/).each do |possible_abbr|
+            decoded_str = self.context.decode_possible_abbr(possible_abbr)
+            decoded_param << (!decoded_str.blank? ? decoded_str : possible_abbr)
+            decoded_param << "_#{conjunctions.shift}_" if !conjunctions.blank?
+          end
+        end
+        
+        decoded_param << "_#{pred}" if pred
+        decoded_param
+      end
+      
       def decode_possible_abbr(possible_abbr)
         possible_assoc_abbr, possible_attr_abbr = extract_possible_assoc_and_attribute_abbr(possible_abbr)
         parent_of_attribute = @context.klass
