@@ -7,9 +7,9 @@ Gem::Specification.new do |s|
   s.version     = RansackAbbreviator::VERSION
   s.authors     = ["Jamie Davidson"]
   s.email       = ["jhdavids8@gmail.com"]
-  s.homepage    = ""
-  s.summary     = %q{TODO: Write a gem summary}
-  s.description = %q{TODO: Write a gem description}
+  s.homepage    = "https://github.com/jhdavids8/ransack-abbreviator"
+  s.summary     = "Avoid POSTs. Abbreviate those Ransack queries."
+  s.description = "Avoid POSTs. Abbreviate those Ransack queries."
 
   s.rubyforge_project = "ransack_abbreviator"
 
@@ -20,7 +20,6 @@ Gem::Specification.new do |s|
 
   s.add_dependency 'ransack', '~> 0.7'
   s.add_development_dependency "pry"
-  # s.add_development_dependency "pry-stack_explorer"
   s.add_development_dependency 'rspec', '~> 2.8.0'
   s.add_development_dependency 'machinist', '~> 1.0.6'
   s.add_development_dependency 'faker', '~> 0.9.5'
