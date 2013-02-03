@@ -3,8 +3,10 @@ require 'ransack_abbreviator/abbreviators/encoder'
 
 module Ransack
   class Context
-    include RansackAbbreviator::Abbreviators::Decoder
-    include RansackAbbreviator::Abbreviators::Encoder
+    attr_reader :decoder, :encoder
+    
+    delegate :encode_ransack_str, to: :encoder
+    delegate :decode_possible_abbr, to: :decoder
     
     def get_associations_and_attribute(str, klass = @klass, associations = [])
       attr_name = nil
@@ -25,9 +27,15 @@ module Ransack
       [associations, attr_name]
     end
     
-    private
+    def decoder
+      @decoder ||= RansackAbbreviator::Abbreviators::Decoder.new(self)
+    end
     
-    def polymorphic_association_specified?(str)
+    def encoder
+      @encoder ||= RansackAbbreviator::Abbreviators::Encoder.new(self)
+    end
+    
+    def self.polymorphic_association_specified?(str)
       str && str.match(/_of_([^_]+?)_type$/)
     end
   end

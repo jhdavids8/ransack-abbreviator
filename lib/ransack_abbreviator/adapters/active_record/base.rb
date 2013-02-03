@@ -34,8 +34,10 @@ module RansackAbbreviator
         end
         
         def ransackable_assoc_abbreviations
-          associations = reflect_on_all_associations.map{|a| a.name.to_s}
-          self._ransack_assoc_abbreviations ||= RansackAbbreviator.assoc_abbreviations.select{ |key, val| associations.include?(key) }
+          self._ransack_assoc_abbreviations ||= begin 
+            associations = reflect_on_all_associations.map{|a| a.name.to_s}
+            RansackAbbreviator.assoc_abbreviations.select{ |key, val| associations.include?(key) }
+          end
         end
         
         def ransackable_column_name_for(possible_abbr)

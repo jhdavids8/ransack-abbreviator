@@ -375,5 +375,21 @@ module Ransack # We're testing Ransack's Search wih abbreviations
         search.result.where_values.first.to_sql.should eq abbr_search.result.where_values.first.to_sql
       end
     end
+    
+    describe '#method_missing' do
+      before do
+        @search = Search.new(Person)
+      end
+      
+      it 'support abbreviations' do
+        abbr_middle_name_search = ransack_abbreviation_for(@search, :middle_name_eq)
+        @search.send(abbr_middle_name_search, 'Ernie')
+        @search.send(abbr_middle_name_search).should eq 'Ernie'
+      end
+      
+      it 'raises NoMethodError when sent an invalid attribute/aabreviation' do
+        expect {@search.i_am_garvage}.to raise_error NoMethodError
+      end
+    end
   end
 end

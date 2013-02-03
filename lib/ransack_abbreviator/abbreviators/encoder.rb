@@ -1,17 +1,23 @@
 module RansackAbbreviator
   module Abbreviators
-    module Encoder
+    class Encoder
+      attr_reader :context
+      
+      def initialize(context)
+        @context = context
+      end
+      
       def encode_ransack_str(str)
         encoded_str = ""
-        associations, attr_name = self.get_associations_and_attribute(str)
-        parent_of_attribute = self.klass
+        associations, attr_name = @context.get_associations_and_attribute(str)
+        parent_of_attribute = @context.klass
         
         if attr_name
           unless associations.blank?
-            encoded_associations, parent_of_attribute = self.encode_associations(associations, str)
+            encoded_associations, parent_of_attribute = encode_associations(associations, str)
             encoded_str = "#{encoded_associations}."
           end
-          encoded_str << self.encode_attribute(attr_name, parent_of_attribute)
+          encoded_str << encode_attribute(attr_name, parent_of_attribute)
         else
           encoded_str = str
         end
@@ -20,7 +26,7 @@ module RansackAbbreviator
       end
       
       def encode_associations(associations, ransack_name)
-        klass = self.klass
+        klass = @context.klass
         encoded_str = ""
         
         associations.each_with_index do |assoc, i|
@@ -41,7 +47,7 @@ module RansackAbbreviator
         [encoded_str, klass]
       end
       
-      def encode_attribute(attr_name, parent=@klass)
+      def encode_attribute(attr_name, parent=@context.klass)
         parent.ransackable_column_abbr_for(attr_name)
       end
     end

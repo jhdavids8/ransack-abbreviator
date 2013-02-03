@@ -1,9 +1,15 @@
 module RansackAbbreviator
   module Abbreviators
-    module Decoder
+    class Decoder
+      attr_reader :context
+      
+      def initialize(context)
+        @context = context
+      end
+      
       def decode_possible_abbr(possible_abbr)
         possible_assoc_abbr, possible_attr_abbr = extract_possible_assoc_and_attribute_abbr(possible_abbr)
-        parent_of_attribute = self.klass
+        parent_of_attribute = @context.klass
         decoded_str = ""
         if possible_assoc_abbr 
           decoded_str, parent_of_attribute = decode_assoc_abbr(possible_assoc_abbr)
@@ -24,11 +30,11 @@ module RansackAbbreviator
         decoded_str = ""
         segments = possible_assoc_abbr.split(/_/)
         association_parts = []
-        klass = self.klass
+        klass = @context.klass
       
         while segments.size > 0 && association_parts << segments.shift
           assoc_to_test = association_parts.join('_')
-          if polymorphic_association_specified?(assoc_to_test)
+          if Ransack::Context.polymorphic_association_specified?(assoc_to_test)
             assoc_name, class_type = get_polymorphic_assoc_and_class_type(assoc_to_test)
             klass = Kernel.const_get(class_type)
             decoded_str << "of_#{class_type}_type_"
@@ -48,7 +54,7 @@ module RansackAbbreviator
         [decoded_str, klass]
       end
     
-      def decode_column_abbr(possible_attr_abbr, klass=@klass)
+      def decode_column_abbr(possible_attr_abbr, klass=@context.klass)
         klass.ransackable_column_name_for(possible_attr_abbr)
       end
       
@@ -57,7 +63,7 @@ module RansackAbbreviator
       def get_polymorphic_assoc_and_class_type(possible_assoc_abbr)
         assoc_name = class_type = nil
         if (match = possible_assoc_abbr.match(/_of_([^_]+?)_type$/))
-          assoc_name = self.klass.ransackable_assoc_name_for(match.pre_match)
+          assoc_name = @context.klass.ransackable_assoc_name_for(match.pre_match)
           class_type = RansackAbbreviator.assoc_name_for(match.captures.first).camelize
         end
         [assoc_name, class_type]
