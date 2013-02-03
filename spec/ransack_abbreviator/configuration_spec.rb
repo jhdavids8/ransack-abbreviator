@@ -20,12 +20,12 @@ module RansackAbbreviator
     
     it "adds association abbreviations" do
       RansackAbbreviator.configure do |config|
-        config.add_assoc_abbreviation(:articles, :als)
+        config.add_assoc_abbreviation(:notes, :ns)
       end
       
-      RansackAbbreviator.assoc_abbreviations.should have_key('articles')
-      RansackAbbreviator.assoc_abbreviation_for('articles').should eq 'als'
-      RansackAbbreviator.assoc_name_for(:als).should eq 'articles'
+      RansackAbbreviator.assoc_abbreviations.should have_key('notes')
+      RansackAbbreviator.assoc_abbreviation_for('notes').should eq 'ns'
+      RansackAbbreviator.assoc_name_for(:ns).should eq 'notes'
     end
   end
 end
