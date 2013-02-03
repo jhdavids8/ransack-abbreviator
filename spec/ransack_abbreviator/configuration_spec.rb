@@ -2,13 +2,30 @@ require "spec_helper"
 
 module RansackAbbreviator
   describe Configuration do
-    context "parsing a config.yml" do
-      it "initializes the abbreviations" do
-        RansackAbbreviator.column_abbreviations.should_not be_blank
-        RansackAbbreviator.column_abbreviations["name"].should == "nm"
-        RansackAbbreviator.assoc_abbreviations.should_not be_blank
-        RansackAbbreviator.assoc_abbreviations[:authored_article_comments].should == "a_ac"
+    it 'yields RansackAbbreviator on configure' do
+      RansackAbbreviator.configure do |config|
+        config.should eq RansackAbbreviator
       end
+    end  
+    
+    it "adds column abbreviations" do
+      RansackAbbreviator.configure do |config|
+        config.add_column_abbreviation(:tag_id, :tid)
+      end
+      
+      RansackAbbreviator.column_abbreviations.should have_key('tag_id')
+      RansackAbbreviator.column_abbreviation_for(:tag_id).should eq 'tid'
+      RansackAbbreviator.assoc_name_for('tid').should eq 'tag_id'
+    end
+    
+    it "adds association abbreviations" do
+      RansackAbbreviator.configure do |config|
+        config.add_assoc_abbreviation(:articles, :als)
+      end
+      
+      RansackAbbreviator.assoc_abbreviations.should have_key('articles')
+      RansackAbbreviator.assoc_abbreviation_for('articles').should eq 'als'
+      RansackAbbreviator.assoc_name_for(:als).should eq 'articles'
     end
   end
 end

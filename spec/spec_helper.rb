@@ -29,7 +29,22 @@ RSpec.configure do |config|
     Schema.create
   end
 
-  config.before(:all)   { Sham.reset(:before_all) }
+  config.before(:all) do
+    Sham.reset(:before_all)
+    RansackAbbreviator.configure do |config|
+      config.add_column_abbreviation(:name, :nm)
+      config.add_column_abbreviation(:title, :tl)
+      config.add_column_abbreviation(:middle_name, :mn)
+      config.add_column_abbreviation(:vote_count, :vc)
+      config.add_assoc_abbreviation(:person, :pr)
+      config.add_assoc_abbreviation(:parent, :pa)
+      config.add_assoc_abbreviation(:children, :ch)
+      config.add_assoc_abbreviation(:comments, :cm)
+      config.add_assoc_abbreviation(:authored_article_comments, :a_ac)
+      config.add_assoc_abbreviation(:notable, :nbl)
+    end
+  end
+  
   config.before(:each)  { Sham.reset(:before_each) }
 end
 
