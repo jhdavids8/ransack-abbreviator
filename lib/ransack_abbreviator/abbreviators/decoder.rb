@@ -8,7 +8,7 @@ module RansackAbbreviator
       end
       
       def decode_parameter(param)
-        str = param.dup
+        str = param.is_a?(Symbol) ? param.to_s : param.dup
         pred = Ransack::Predicate.detect_and_strip_from_string!(str)
         decoded_param = nil
         case str
@@ -18,7 +18,7 @@ module RansackAbbreviator
           conjunctions = str.split("_").select{|s| s == "and" || s == "or" }
           decoded_param = ""
           str.split(/_and_|_or_/).each do |possible_abbr|
-            decoded_str = self.context.decode_possible_abbr(possible_abbr)
+            decoded_str = self.context.decode_association_and_column(possible_abbr)
             decoded_param << (!decoded_str.blank? ? decoded_str : possible_abbr)
             decoded_param << "_#{conjunctions.shift}_" if !conjunctions.blank?
           end
@@ -28,15 +28,15 @@ module RansackAbbreviator
         decoded_param
       end
       
-      def decode_possible_abbr(possible_abbr)
+      def decode_association_and_column(possible_abbr)
         possible_assoc_abbr, possible_attr_abbr = extract_possible_assoc_and_attribute_abbr(possible_abbr)
         parent_of_attribute = @context.klass
         decoded_str = ""
         if possible_assoc_abbr 
-          decoded_str, parent_of_attribute = decode_assoc_abbr(possible_assoc_abbr)
+          decoded_str, parent_of_attribute = decode_association(possible_assoc_abbr)
         end
 
-        if attr_name = decode_column_abbr(possible_attr_abbr, parent_of_attribute)
+        if attr_name = decode_attribute(possible_attr_abbr, parent_of_attribute)
           decoded_str << attr_name
         else
           decoded_str << possible_attr_abbr
@@ -45,7 +45,7 @@ module RansackAbbreviator
         decoded_str
       end
     
-      def decode_assoc_abbr(possible_assoc_abbr)
+      def decode_association(possible_assoc_abbr)
         # possible_assoc_abbr can be a chain of abbreviated associations, so decode them all and reconstruct into
         # the format expected by Ransack
         decoded_str = ""
@@ -75,7 +75,7 @@ module RansackAbbreviator
         [decoded_str, klass]
       end
     
-      def decode_column_abbr(possible_attr_abbr, klass=@context.klass)
+      def decode_attribute(possible_attr_abbr, klass=@context.klass)
         klass.ransackable_column_name_for(possible_attr_abbr)
       end
       

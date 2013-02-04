@@ -58,7 +58,13 @@ module RansackAbbreviator
             end
           end
           
-          context 'when an undefined abbreviation' do
+          context 'when a defined association' do
+            it "returns the full association name" do
+              Person.ransackable_assoc_name_for("articles").should eq "articles"
+            end
+          end
+          
+          context 'when an undefined abbreviation and association' do
             it "returns nil" do
               Person.ransackable_assoc_name_for("you_fake").should be_nil
             end

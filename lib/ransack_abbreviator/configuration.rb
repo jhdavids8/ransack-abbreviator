@@ -9,6 +9,26 @@ module RansackAbbreviator
       yield self
     end
     
+    def column_abbreviations=(abbreviations)
+      if abbreviations
+        if !(abbreviations.values & RansackAbbreviator::Constants::RESERVED_KEYWORDS).blank?
+          fail "You used a reserved keyword as a column abbreviation. Reserverd keywords: #{RansackAbbreviator::Constants::RESERVED_KEYWORDS.join(", ")}"
+        end
+        
+        self.column_abbreviations = abbreviations
+      end
+    end
+    
+    def assoc_abbreviations=(abbreviations)
+      if abbreviations
+        if !(abbreviations.values & RansackAbbreviator::Constants::RESERVED_KEYWORDS).blank?
+          fail "You used a reserved keyword as an association abbreviation. Reserverd keywords: #{RansackAbbreviator::Constants::RESERVED_KEYWORDS.join(", ")}"
+        end
+        
+        self.assoc_abbreviations = abbreviations
+      end
+    end
+    
     def add_column_abbreviation(column, abbr)
       self.column_abbreviations[column.to_s] = abbr.to_s
     end

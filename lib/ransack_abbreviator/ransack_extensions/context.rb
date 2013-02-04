@@ -5,8 +5,8 @@ module Ransack
   class Context
     attr_reader :decoder, :encoder
     
-    delegate :encode_ransack_str, to: :encoder
-    delegate :decode_parameter, :decode_possible_abbr, to: :decoder
+    delegate :encode_parameter, :encode_association_and_column, to: :encoder
+    delegate :decode_parameter, :decode_association_and_column, to: :decoder
     
     def get_associations_and_attribute(str, klass = @klass, associations = [])
       attr_name = nil

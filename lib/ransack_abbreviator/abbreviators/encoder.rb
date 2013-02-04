@@ -7,7 +7,21 @@ module RansackAbbreviator
         @context = context
       end
       
-      def encode_ransack_str(str)
+      def encode_parameter(param)
+        str = param.is_a?(Symbol) ? param.to_s : param.dup
+        pred = Ransack::Predicate.detect_and_strip_from_string!(str)
+        encoded_param = ""
+        conjunctions = str.split("_").select{|s| s == "and" || s == "or" }
+        str.split(/_and_|_or_/).each do |s|
+          encoded_param << self.context.encode_association_and_column(s)
+          encoded_param << "_#{conjunctions.shift}_" if !conjunctions.blank?
+        end
+        
+        encoded_param << "_#{pred}" if pred
+        encoded_param
+      end
+      
+      def encode_association_and_column(str)
         encoded_str = ""
         associations, attr_name = @context.get_associations_and_attribute(str)
         parent_of_attribute = @context.klass

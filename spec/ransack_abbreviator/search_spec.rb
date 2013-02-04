@@ -254,6 +254,11 @@ module Ransack # We're testing Ransack's Search wih abbreviations
           search.result.should be_an ActiveRecord::Relation
           where = search.result.where_values.first
           where.to_sql.should match /"people"."name" = 'Ernie'/
+          
+          search.build(ransack_abbreviation_for(search, :notable_of_Article_type_title_eq) => 'Test')
+          search.result.should be_an ActiveRecord::Relation
+          where = search.result.where_values.first
+          where.to_sql.should match /"articles"."title" = 'Test'/
         end
 
         it 'evaluates nested conditions' do
@@ -377,23 +382,35 @@ module Ransack # We're testing Ransack's Search wih abbreviations
     end
     
     describe '#method_missing' do
-      before do
-        @search = Search.new(Person)
+      context "when sent valid abbreviations" do
+        before do
+          @search = Search.new(Person)
+        end
+        
+        it 'sets condition attributes' do
+          abbr_search = ransack_abbreviation_for(@search, :middle_name_eq)
+          @search.send "#{abbr_search}=", 'Ernie'
+          @search.middle_name_eq.should eq 'Ernie'
+        
+          abbr_search = ransack_abbreviation_for(@search, :authored_article_comments_vote_count_lteq)
+          @search.send "#{abbr_search}=", 10
+          @search.authored_article_comments_vote_count_lteq.should eq 10
+        
+          note_search = Search.new(Note)
+          abbr_search = ransack_abbreviation_for(note_search, :notable_of_Person_type_name_eq)
+          note_search.send "#{abbr_search}=", 'Ernie'
+          note_search.notable_of_Person_type_name_eq.should eq 'Ernie'
+        end
       end
+      context 'when sent valid attributes' do
+        before do
+          @search = Search.new(Person)
+        end
       
-      it 'support abbreviations' do
-        abbr_search = ransack_abbreviation_for(@search, :middle_name_eq)
-        @search.send "#{abbr_search}=", 'Ernie'
-        @search.middle_name_eq.should eq 'Ernie'
-        
-        abbr_search = ransack_abbreviation_for(@search, :authored_article_comments_vote_count_lteq)
-        @search.send "#{abbr_search}=", 10
-        @search.authored_article_comments_vote_count_lteq.should eq 10
-        
-        note_search = Search.new(Note)
-        abbr_search = ransack_abbreviation_for(note_search, :notable_of_Person_type_name_eq)
-        note_search.send "#{abbr_search}=", 'Ernie'
-        note_search.notable_of_Person_type_name_eq.should eq 'Ernie'
+        it 'sets condition attributes' do
+          @search.name_eq = 'Ernie'
+          @search.name_eq.should eq 'Ernie'
+        end
       end
       
       it 'raises NoMethodError when sent an invalid attribute/abreviation' do
