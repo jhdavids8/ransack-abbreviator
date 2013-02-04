@@ -58,7 +58,7 @@ module RansackAbbreviator
     end
     
     def config_dir
-      defined?(Rails) ? Rails.root.join("config") : Pathname.new("config")
+      Pathname.new("config")
     end
   end
 end
