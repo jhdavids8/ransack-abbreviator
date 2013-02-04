@@ -1,5 +1,6 @@
 require "ostruct"
 require "yaml"
+require 'ransack'
 require 'ransack_abbreviator/configuration'
 require 'ransack_abbreviator/constants'
 require 'ransack_abbreviator/engine' if defined? Rails

@@ -15,7 +15,7 @@ module RansackAbbreviator
           fail "You used a reserved keyword as a column abbreviation. Reserverd keywords: #{RansackAbbreviator::Constants::RESERVED_KEYWORDS.join(", ")}"
         end
         
-        self.column_abbreviations = abbreviations
+        @@column_abbreviations = abbreviations
       end
     end
     
@@ -25,7 +25,7 @@ module RansackAbbreviator
           fail "You used a reserved keyword as an association abbreviation. Reserverd keywords: #{RansackAbbreviator::Constants::RESERVED_KEYWORDS.join(", ")}"
         end
         
-        self.assoc_abbreviations = abbreviations
+        @@assoc_abbreviations = abbreviations
       end
     end
     
