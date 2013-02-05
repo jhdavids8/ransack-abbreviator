@@ -15,7 +15,8 @@ gem 'ransack_abbreviator'
 ### How to Use
 The abbreviator should cause absolutely no problems if you decide to not use abbreviations. It only kicks in when an abbreviation is detected in the params. That said, here's how to use it:
 
-1. First, define some abbreviations for columns and associations that can be queried in your search form. You can create a ransack_abbreviator.yml file in your config directory in a structure like this:
+#### Define Abbreviations
+First, define some abbreviations for columns and associations that can be queried in your search form. You can create a ransack_abbreviator.yml file in your config directory in a structure like this:
 ```ruby
 ransack_abbreviations:
   columns:
@@ -25,6 +26,7 @@ ransack_abbreviations:
     articles: "ars"
     people: "ppl"
 ```
+
 If you don't want to use a YAML file, define an initializer and add your abbreviations there.
 ```ruby
 RansackAbbreviator.configure do |config|
@@ -34,7 +36,8 @@ RansackAbbreviator.configure do |config|
   config.add_assoc_abbreviation(:people, :ppl)
 end
 ```
-2. In your form, pass the Ransack language you would normally use (along with the search object) to a helper called ransack_abbreviation_for:
+#### Use the Abbreviated Attribute in your Form
+In your form, pass the Ransack language you would normally use (along with the search object) to a helper called ransack_abbreviation_for:
 ```ruby
 <%= search_form_for @q do |f| %>
   <%= f.text_field ransack_abbreviation_for(@q, :name_cont) %>
@@ -42,11 +45,13 @@ end
   <%= f.submit %>
 <% end %>
 ```
-With the above, what would have normally been a URL param of 'name_cont' is now 'nm_cont'. 'articles_title_start' is now 'ars.tl_start'.
+
+When the above form is submitted, what would have normally been a URL param of 'name_cont' is now 'nm_cont'. 'articles_title_start' is now 'ars.tl_start'.
 
 See the [Ransack](https://github.com/ernie/ransack) documentation on how to reference associations, columns, and predicates.
 
-3. Hopefully, remove all the POST hacks you did to get pagination and whatnot to work correctly, and enjoy a shorter URL!
+#### Remove those POST hacks!
+Hopefully, the URL is now at least half the size it could have been before and you can remove all the POST hacks you did to get pagination and whatnot to work correctly!
 
 ### Some Notes
 * ransack_abbreviation_for abbreviates what it can, and returns the full name for what it cannot. For example, if you forgot to abbreviate 'articles', then ransack_abbreviation_for(@q, :articles_title_start) would return 'articles.tl_start'
