@@ -17,15 +17,14 @@ The abbreviator should cause absolutely no problems if you decide to not use abb
 
 #### Define Abbreviations
 First, define some abbreviations for columns and associations that can be queried in your search form. You can create a ransack_abbreviator.yml file in your config directory in a structure like this:
-```ruby
-ransack_abbreviations:
-  columns:
-    name: "nm"
-    title: "tl"
-  associations:
-    articles: "ars"
-    people: "ppl"
-```
+
+    ransack_abbreviations:
+      columns:
+        name: "nm"
+        title: "tl"
+      associations:
+        articles: "ars"
+        people: "ppl"
 
 If you don't want to use a YAML file, define an initializer and add your abbreviations there.
 ```ruby
@@ -38,13 +37,12 @@ end
 ```
 #### Use the Abbreviated Attribute in your Form
 In your form, pass the Ransack language you would normally use (along with the search object) to a helper called ransack_abbreviation_for:
-```ruby
-<%= search_form_for @q do |f| %>
-  <%= f.text_field ransack_abbreviation_for(@q, :name_cont) %>
-  <%= f.text_field ransack_abbreviation_for(@q, :articles_title_start) %>
-  <%= f.submit %>
-<% end %>
-```
+
+    <%= search_form_for @q do |f| %>
+      <%= f.text_field ransack_abbreviation_for(@q, :name_cont) %>
+      <%= f.text_field ransack_abbreviation_for(@q, :articles_title_start) %>
+      <%= f.submit %>
+    <% end %>
 
 When the above form is submitted, what would have normally been a URL param of 'name_cont' is now 'nm_cont'. 'articles_title_start' is now 'ars.tl_start'.
 
