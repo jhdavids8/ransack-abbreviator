@@ -123,6 +123,7 @@ module Ransack # We're testing Ransack's Search wih abbreviations
     end
     
     context "without abbreviations" do
+      # Below specs copied from Ransack 0.7.2 search_spec. I'm ensuring I didn't break any existing Ransack functionality
       it 'creates Conditions for top-level attributes' do
         search = Search.new(Person, :name_eq => 'Ernie')
         condition = search.base[:name_eq]

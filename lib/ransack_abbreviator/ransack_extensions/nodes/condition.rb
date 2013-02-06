@@ -4,11 +4,19 @@ module Ransack
       alias_method :ransack_condition_build, :build
       
       def build(params)
-        decoded_attr_names = []
-        params[:a].each do |possible_abbr|
-          decoded_attr_names << @context.decode_parameter(possible_abbr)
+        attrs = params[:a]
+        if !attrs.blank?
+          case attrs
+          when Array
+            attrs.each_with_index do |attr, i|
+              params[:a][i] = @context.decode_parameter(attr)
+            end
+          when Hash
+            attrs.each do |index, attr|
+              params[:a][index][:name] = @context.decode_parameter(attr[:name])
+            end
+          end
         end
-        params[:a] = decoded_attr_names
         ransack_condition_build(params)
       end
     end
