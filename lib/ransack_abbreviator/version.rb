@@ -1,3 +1,3 @@
 module RansackAbbreviator
-  VERSION = "0.0.7alpha"
+  VERSION = "0.0.7"
 end

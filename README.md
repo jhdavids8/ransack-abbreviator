@@ -16,7 +16,7 @@ gem 'ransack_abbreviator'
 The abbreviator should cause absolutely no problems if you decide to not use abbreviations. It only kicks in when an abbreviation is detected in the params. That said, here's how to use it:
 
 #### Define Abbreviations
-First, define some abbreviations for columns and associations that can be queried in your search form. You can create a ransack_abbreviator.yml file in your config directory in a structure like this:
+First, define some abbreviations for columns and associations. One way to do that is to create a ransack_abbreviator.yml file in your config directory in a structure like this:
 
     ransack_abbreviations:
       columns:
@@ -36,27 +36,30 @@ RansackAbbreviator.configure do |config|
 end
 ```
 #### Use the Abbreviated Attribute in your Form
-In your form, pass the Ransack language you would normally use (along with the search object) to a helper called ransack_abbreviation_for:
+In your form, simply add an 'abbr_' prefix to each form element:
 
     <%= search_form_for @q do |f| %>
-      <%= f.text_field ransack_abbreviation_for(@q, :name_cont) %>
-      <%= f.text_field ransack_abbreviation_for(@q, :articles_title_start) %>
+      <%= f.abbr_label :name_cont, "Name Contains" %>
+      <%= f.abbr_text_field :name_cont %>
+      <%= f.abbr_label :articles_title_start, "Title of article starts with" %>
+      <%= f.abbr_text_field :articles_title_start %>
       <%= f.submit %>
     <% end %>
 
-When the above form is submitted, what would have normally been a URL param of 'name_cont' is now 'nm_cont'. 'articles_title_start' is now 'ars.tl_start'.
+When the above form is submitted, what would have normally been a URL param of 'name_cont' is now 'nm_cont'. 'articles_title_start' is now 'ars.tl_start'. View the source of the generated form to see for yourself!
 
-See the [Ransack](https://github.com/ernie/ransack) documentation on how to reference associations, columns, and predicates.
+If you're using Ransack's 'attribute_select', simply change it to 'abbr_attribute_select' to utilize abbreviations over the full attribute name.
+
+See the [Ransack](https://github.com/ernie/ransack) documentation for more info on the language Ransack uses and how to reference associations, columns, and predicates.
 
 #### Remove those POST hacks!
 Hopefully, the URL is now at least half the size it could have been before and you can remove all the POST hacks you did to get pagination and whatnot to work correctly!
 
 ### Some Notes
-* ransack_abbreviation_for abbreviates what it can, and returns the full name for what it cannot. For example, if you forgot to abbreviate 'articles', then ransack_abbreviation_for(@q, :articles_title_start) would return 'articles.tl_start'
+* The code works by abbreviating what it can and leaving what it cannot alone. For example, if you forgot to abbreviate 'articles', then <%= f.abbr_text_field :articles_title_start %> would return 'articles.tl_start' as the ID and param of the text field.
 
 ### To Do
 * Support abbreviation of 'ransacker' attributes
-* Extend the 'attribute_select' form helper to support returning attributes as their abbreviations
 
 ### License and Copyright
 MIT License. Copyright &copy; 2013 [Jamie Davidson](http://jamie-davidson.com)
