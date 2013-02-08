@@ -5,7 +5,7 @@ module Ransack
       
       def build(params)
         attrs = params[:a]
-        if !attrs.blank?
+        unless attrs.blank?
           case attrs
           when Array
             attrs.each_with_index do |attr, i|

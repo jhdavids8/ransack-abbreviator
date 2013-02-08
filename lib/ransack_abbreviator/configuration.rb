@@ -11,8 +11,9 @@ module RansackAbbreviator
     
     def column_abbreviations=(abbreviations)
       if abbreviations
+        raise ArgumentError, "abbreviates must be a Hash" unless abbreviations.is_a?(Hash)
         if !(abbreviations.values & RansackAbbreviator::Constants::RESERVED_KEYWORDS).blank?
-          fail "You used a reserved keyword as a column abbreviation. Reserverd keywords: #{RansackAbbreviator::Constants::RESERVED_KEYWORDS.join(", ")}"
+          raise ArgumentError, "You used a reserved keyword as a column abbreviation. Reserverd keywords: #{RansackAbbreviator::Constants::RESERVED_KEYWORDS.join(", ")}"
         end
         
         @@column_abbreviations = abbreviations
@@ -21,8 +22,9 @@ module RansackAbbreviator
     
     def assoc_abbreviations=(abbreviations)
       if abbreviations
+        raise ArgumentError, "abbreviates must be a Hash" unless abbreviations.is_a?(Hash)
         if !(abbreviations.values & RansackAbbreviator::Constants::RESERVED_KEYWORDS).blank?
-          fail "You used a reserved keyword as an association abbreviation. Reserverd keywords: #{RansackAbbreviator::Constants::RESERVED_KEYWORDS.join(", ")}"
+          raise ArgumentError, "You used a reserved keyword as an association abbreviation. Reserverd keywords: #{RansackAbbreviator::Constants::RESERVED_KEYWORDS.join(", ")}"
         end
         
         @@assoc_abbreviations = abbreviations
