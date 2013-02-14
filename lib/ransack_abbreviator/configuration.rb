@@ -3,7 +3,8 @@ require "pathname"
 module RansackAbbreviator
   module Configuration
     mattr_accessor :column_abbreviations, :assoc_abbreviations
-    self.column_abbreviations = self.assoc_abbreviations = {}
+    self.column_abbreviations = {}
+    self.assoc_abbreviations = {}
     
     def configure
       yield self

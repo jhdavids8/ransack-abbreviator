@@ -82,7 +82,8 @@ module RansackAbbreviator
       private
     
       def get_polymorphic_assoc_and_class_type(possible_assoc_abbr)
-        assoc_name = class_type = nil
+        assoc_name = nil
+        class_type = nil
         if (match = possible_assoc_abbr.match(/_of_([^_]+?)_type$/))
           assoc_name = @context.klass.ransackable_assoc_name_for(match.pre_match)
           class_type = RansackAbbreviator.assoc_name_for(match.captures.first).camelize
@@ -91,7 +92,8 @@ module RansackAbbreviator
       end
       
       def extract_possible_assoc_and_attribute_abbr(s)
-        possible_assoc = possible_attr_name = nil
+        possible_assoc = nil
+        possible_attr_name = nil
         if s.include?(".")
           parts = s.split(".")
           possible_assoc = parts[0]

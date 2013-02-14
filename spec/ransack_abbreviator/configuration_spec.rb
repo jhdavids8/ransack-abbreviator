@@ -15,7 +15,7 @@ module RansackAbbreviator
       
       RansackAbbreviator.column_abbreviations.should have_key('tag_id')
       RansackAbbreviator.column_abbreviation_for(:tag_id).should eq 'tid'
-      RansackAbbreviator.assoc_name_for('tid').should eq 'tag_id'
+      RansackAbbreviator.column_name_for('tid').should eq 'tag_id'
     end
     
     it "adds association abbreviations" do
